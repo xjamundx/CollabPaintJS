@@ -1,7 +1,7 @@
 ;(function() {
 
-	var canvas, ctx, touchdown, receive, send, drawCircle, socket;
-	
+	var canvas, ctx, touchdown, receive, send, drawCircle, socket, drawMove, iphone = false;
+
 	receive = function(msg) {
 		if ('coords' in msg) {
 			drawCircle("blue", msg.coords);
@@ -34,30 +34,55 @@
 	});
 	
 	window.onload = function() {
-	
+
+		setTimeout(function() { window.scrollTo(0, 1) }, 100);
+
 		canvas = document.getElementById('canvas');
 		ctx = canvas.getContext('2d');
 	
-		window.onmousedown = function() {
+		canvas.onmousedown = function(e) {
 			touchdown = true;
 		};
 	
-		canvas.onmousemove = function(e) {
-			var coords;
-			if (touchdown) {
-				coords = {
-					x:e.clientX - e.target.offsetLeft + window.scrollX,
-					y:e.clientY - e.target.offsetTop + window.scrollY
-				};
-				drawCircle("red", coords);
-				send(coords);
-			}
+		canvas.ontouchmove = function(e) {
+			iphone=true;
+			drawMove(e);
+			e.preventDefault();
+		}
 	
+		document.querySelector("body").ontouchmove = function(e) {
+			drawMove(e);
+			e.preventDefault();
+		}
+
+
+		canvas.onmousemove = function(e) {
+			drawMove(e);	
 		};
 	
-		window.onmouseup = function() {
+
+		window.onmouseup = function(e) {
 			touchdown = false;
 		};
 		
+	};
+
+	var drawMove = function(e) {
+		var coords;
+		if (touchdown) {
+			coords = {
+				x:e.clientX - e.target.offsetLeft + window.scrollX,
+				y:e.clientY - e.target.offsetTop + window.scrollY
+			};
+			drawCircle("red", coords);
+			send(coords);
+		} else if (iphone) {
+			coords = {
+				x: e.targetTouches[0].clientX,
+				y: e.targetTouches[0].clientY
+			};			
+			drawCircle("red", coords);
+			send(coords);
+		}
 	};
 })();
