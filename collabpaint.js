@@ -1,26 +1,7 @@
-;(function() {
+(function() {
 
-	var canvas, ctx, touchdown, receive, send, drawCircle, socket, drawMove, iphone = false;
+	var ctx, touchdown, receive, send, drawCircle, socket, move;
 
-	receive = function(msg) {
-		if ('coords' in msg) {
-			drawCircle("blue", msg.coords);
-		}
-	};
-	
-	send = function(coords) {
-		socket.send(coords);
-	};
-	
-	drawCircle = function(color, coords) {
-		ctx.fillStyle = color;
-		ctx.beginPath();
-		ctx.moveTo(coords.x,coords.y);
-		ctx.arc(coords.x, coords.y, 5, 0,  Math.PI*2, true);
-		ctx.fill();
-		ctx.closePath();
-	};
-	
 	socket = new io.Socket(null, {port: 8080});
 	socket.connect();
 	socket.on('message', function(msg) {
@@ -33,42 +14,19 @@
 		}
 	});
 	
-	window.onload = function() {
-
-		setTimeout(function() { window.scrollTo(0, 1) }, 100);
-
-		canvas = document.getElementById('canvas');
-		ctx = canvas.getContext('2d');
-	
-		canvas.onmousedown = function(e) {
-			touchdown = true;
-		};
-	
-		canvas.ontouchmove = function(e) {
-			iphone=true;
-			drawMove(e);
-			e.preventDefault();
+	receive = function(msg) {
+		if ('coords' in msg) {
+			drawCircle("blue", msg.coords);
 		}
+	};
 	
-		document.querySelector("body").ontouchmove = function(e) {
-			drawMove(e);
-			e.preventDefault();
-		}
-
-
-		canvas.onmousemove = function(e) {
-			drawMove(e);	
-		};
-	
-
-		window.onmouseup = function(e) {
-			touchdown = false;
-		};
-		
+	send = function(coords) {
+		socket.send(coords);
 	};
 
-	var drawMove = function(e) {
+	move = function(e, iphone) {
 		var coords;
+		iphone = iphone || false;
 		if (touchdown) {
 			coords = {
 				x:e.clientX - e.target.offsetLeft + window.scrollX,
@@ -77,12 +35,60 @@
 			drawCircle("red", coords);
 			send(coords);
 		} else if (iphone) {
-			coords = {
-				x: e.targetTouches[0].clientX,
-				y: e.targetTouches[0].clientY
-			};			
-			drawCircle("red", coords);
-			send(coords);
+			for (var i=0; i<e.targetTouches.length; i++) {
+				coords = {
+					x: e.targetTouches[i].clientX,
+					y: e.targetTouches[i].clientY
+				};			
+				drawCircle("red", coords);
+				send(coords);
+			}
 		}
 	};
+		
+	drawCircle = function(color, coords) {
+		ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(coords.x,coords.y);
+		ctx.arc(coords.x, coords.y, 5, 0,  Math.PI*2, true);
+		ctx.fill();
+		ctx.closePath();
+	};
+		
+	window.onload = function() {
+	
+		var body, canvas;
+
+		body = document.querySelector("body");
+		canvas = document.querySelector('canvas');
+		ctx = canvas.getContext('2d');
+	
+		// hide the toolbar in iOS
+		setTimeout(function() { window.scrollTo(0, 1); }, 100);
+
+		// prevents dragging the page in iOS	
+		body.ontouchmove = function(e) {
+			e.preventDefault();
+		};
+	
+		// iOS alternative to mouse move
+		canvas.ontouchmove = function(e) {
+			move(e, true);
+		};
+		
+		// typical draw evemt for desktop 
+		canvas.onmousemove = function(e) {
+			move(e);	
+		};
+	
+	};
+
+	window.onmouseup = function(e) {
+		touchdown = false;
+	};
+		
+	window.onmousedown = function(e) {
+		touchdown = true;
+	};
+	
 })();
