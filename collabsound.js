@@ -1,6 +1,6 @@
 (function() {
 
-	var ctx, touchdown, receive, send, drawCircle, socket, move;
+	var ctx, touchdown, receive, send, drawCircle, socket, move,audio;
 
 	socket = new io.Socket(null, {port: 8080});
 	socket.connect();
@@ -18,6 +18,7 @@
 		if ('coords' in msg) {
 			drawCircle("blue", msg.coords);
 		}
+		audio.play();
 	};
 	
 	send = function(coords) {
@@ -28,6 +29,7 @@
 		var coords;
 		iphone = iphone || false;
 		if (touchdown) {
+			audio.play();
 			coords = {
 				x:e.clientX - e.target.offsetLeft + window.scrollX,
 				y:e.clientY - e.target.offsetTop + window.scrollY
@@ -58,6 +60,8 @@
 	window.onload = function() {
 	
 		var body, canvas;
+		audio = new Audio();
+		audio.src = "http://www.schillmania.com/projects/soundmanager2/demo/christmas-lights/sound/glass0.mp3";
 
 		body = document.querySelector("body");
 		canvas = document.querySelector('canvas');

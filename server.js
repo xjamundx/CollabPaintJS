@@ -6,10 +6,10 @@ var http = require('http'),
 	sys = require('sys'),
 	server = http.createServer(function(req, res) {
 		
-		// force any unknown request to collabpaint.html
+		// force any unknown request to collabsound.html
 		var path = url.parse(req.url).pathname;
-		if (path !== "/json.js" && path !== "/collabpaint.js" && path !== "/collabpaint.html") {
-			path = "/collabpaint.html";
+		if (path !== "/json.js" && path !== "/collabsound.js" && path !== "/collabsound.html") {
+			path = "/collabsound.html";
 		}
 
 		fs.readFile(__dirname + path, function(err, data) {
@@ -30,5 +30,6 @@ io.on('connection', function(client) {
 			coords: coords,
 			session_id: client.sessionId
 		});
+		
 	});
 });
