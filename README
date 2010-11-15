@@ -1,14 +1,14 @@
-Fancy Collaboritive Painting App Based on Node.js
+Simple Collaboritive Sound Experiment
 
 Free to use and distribute or hack or whatever.
 
 Requires:
+	Sox
 	Node.js
 	Socket.io-node
 
 Intructions:
-	I needed to move this into my socket.io directory to get it to work.
-	cd ~/dev/socket.io/CollabPaintJS
+	Update the relevant paths in server.js
 	sudo node server.js
 
 Notes:
