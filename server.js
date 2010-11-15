@@ -69,9 +69,14 @@ var http = require('http'),
 		}
 
 		fs.readFile(__dirname + path, function(err, data) {
-			res.writeHead(200, {'Content-Type': /\.js$/.test(path) ? 'text/javascript' : 'text/html'})
-			res.write(data, 'utf8');
-			res.end();
+			if (!err) {
+				res.writeHead(200, {'Content-Type': /\.js$/.test(path) ? 'text/javascript' : 'text/html'})
+				res.write(data, 'utf8');
+				res.end();
+			} else {
+				console.log("error reading " + path);
+				console.log(err);
+			}
 		});
 
 	});
