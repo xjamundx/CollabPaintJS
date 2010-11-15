@@ -34,15 +34,22 @@ var http = require('http'),
 			sox.on('exit', function (code) {
 				
 				fs.readFile(soundFile, function(err, data) {
-					res.writeHead(200, {'Content-Type':'audio/x-wav'})
-					res.write(data, 'binary');
-					res.end();
-					fs.unlink(soundFile, function(err) {
-						if (err) {
-							console.log(err);
-						}
-						console.log('successfully deleted ' + soundFile);
-  					});
+					if (!err) {
+						res.writeHead(200, {'Content-Type':'audio/x-wav'})
+						res.write(data, 'binary');
+						res.end();
+						fs.unlink(soundFile, function(err) {
+							if (err) {
+								console.log('could not delete ' + soundFile);
+								console.log(err);
+							} else {
+								console.log('successfully deleted ' + soundFile);
+							}
+	  					});
+	  				} else {
+	  					console.log("error reading " + soundFile);
+	  					console.log(err);
+	  				}
 				});
 				
 				if (code !== 0) {
