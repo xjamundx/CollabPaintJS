@@ -1,5 +1,4 @@
 var http = require('http'),
-	num = 0,
 	WIDTH = 320,
 	HEIGHT = 430,
 	url = require('url'),
@@ -12,7 +11,8 @@ var http = require('http'),
 		var uri = url.parse(req.url),
 			path = uri.pathname,
 			args = {},
-			len = .66,
+			len,
+			num,
 			soundFile,
 			freq,
 			sox,
@@ -26,6 +26,7 @@ var http = require('http'),
 		
 		// check if they're going to /sound
 		if (/\/sound/.test(path)) {
+			num = Math.random() * 4000;
 			len = args.x / WIDTH + .25;
 			freq = Math.floor(args.y / HEIGHT * 2000) + 300;
 			soundFile = __dirname + '/sine-' + num + '.wav';
