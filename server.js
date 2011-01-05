@@ -1,7 +1,6 @@
 var http = require('http'),
 	url = require('url'),
 	fs = require('fs'),
-	// may need to change this to be a full path
 	io = require('socket.io'), 
 	sys = require('sys'),
 	server = http.createServer(function(req, res) {
