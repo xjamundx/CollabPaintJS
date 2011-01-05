@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CollabPaintJS</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+    <style>
+    	h1 {
+    		color: red;
+		text-shadow: 0px 2px 2px white;
+    	}
+
+    	body {
+    		background: black;
+    		text-align: center;
+    	}
+
+	canvas {
+		background-color: black;
+		cursor: pointer;
+		border-radius: 16px;
+		-moz-border-radius: 16px;
+		-webkit-box-shadow: 0px 0px 20px white;
+		-moz-box-shadow: 0px 0px 20px white;
+	}
+
+	@media screen and (max-width: 320px) {
+		h1 {
+			display: none;
+		}
+		canvas {
+			border: none;
+			border-radius: none;
+			-webkit-box-shadow: none;
+		}
+	}
+    </style>        
+    <script src="/json.js"></script> <!-- for ie -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/collabpaint.js"></script>
+  </head>
+  <body>
+    <h1>CollabPaintJS</h1>    
+	<canvas id="canvas" width="320" height="430"></canvas>
+  </body>
+</html>
