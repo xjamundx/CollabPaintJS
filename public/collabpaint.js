@@ -60,6 +60,7 @@
 	
 	$clear.addEventListener('click', function(e) {
 		clearScreen()
+		socket.send({clear:true});
 		touchdown = false
 		clearLast()
 	}, false)
