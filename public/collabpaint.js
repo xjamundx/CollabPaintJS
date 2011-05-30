@@ -5,16 +5,7 @@
 	socket = new io.Socket()
 	socket.connect()
 	
-	socket.on('message', function(msg) {
-		var i = 0, circle
-		if ('buffer' in msg) {
-			for (i; i < msg.buffer.length; i++) {				
-				receive(msg.buffer[i])
-			}
-		} else {
-			receive(msg);
-		}
-	});
+	socket.on('message', receive);
 
 	// locals
 	var body = document.querySelector("body")
@@ -23,6 +14,7 @@
 		, $color = document.getElementById("color")
 		, $clear = document.getElementById("clear")
 		, $game = document.getElementById("game")
+		, $count = document.getElementById("count")
 	
 	// globals
 	ctx = $canvas.getContext('2d');
@@ -76,11 +68,25 @@
 	};
 	
 	function receive(msg) {
+
+		if (msg.buffer) {
+			console.log("drawing")
+			msg.buffer.forEach(function(message) {
+				receive(message)
+			});
+		}
+
 		if (msg.clear) {
 			clearScreen()
-		} else if (msg.circle) {
-			drawCircle(msg.circle);
+		}
+		
+		if (msg.circle) {
+			drawCircle(msg.circle)
 		}		
+		
+		if (msg.count) {
+			$count.innerHTML = "Current Users: " + msg.count
+		}
 	};
 	
 	function clearScreen() {
@@ -90,6 +96,8 @@
 	function move(e, iphone) {
 
 		var cx, circle, x, y, i, iphone = iphone || false;
+
+		if (!touchdown && !iphone) return
 
 		if (touchdown) {
 			x = e.clientX - $game.offsetLeft + window.scrollX
