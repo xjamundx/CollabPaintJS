@@ -70,7 +70,6 @@
 	function receive(msg) {
 
 		if (msg.buffer) {
-			console.log("drawing")
 			msg.buffer.forEach(function(message) {
 				receive(message)
 			});
