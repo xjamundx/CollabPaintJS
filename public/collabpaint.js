@@ -16,12 +16,15 @@
 		}
 	});
 
+	// locals
 	var body = document.querySelector("body")
-	var $canvas = document.getElementById("canvas")
-	var $size = document.getElementById("size")
-	var $color = document.getElementById("color")
-	var $clear = document.getElementById("clear")
+		, $canvas = document.getElementById("canvas")
+		, $size = document.getElementById("size")
+		, $color = document.getElementById("color")
+		, $clear = document.getElementById("clear")
+		, $game = document.getElementById("game")
 	
+	// globals
 	ctx = $canvas.getContext('2d');
 	width = $canvas.getAttribute("width");
 	height = $canvas.getAttribute("height");
@@ -89,8 +92,8 @@
 		var cx, circle, x, y, i, iphone = iphone || false;
 
 		if (touchdown) {
-			x = e.clientX - e.target.offsetLeft + window.scrollX
-			y = e.clientY - e.target.offsetTop + window.scrollY
+			x = e.clientX - $game.offsetLeft + window.scrollX
+			y = e.clientY - $game.offsetTop + window.scrollY
 		} else if (iphone) {
 			for (i = 0; i < e.targetTouches.length; i++) {
 				x = e.targetTouches[i].clientX

@@ -1,21 +1,17 @@
-h1 {
-	color: red;
-	text-shadow: 0px 2px 2px white;
-}
-
 body {
 	background: black;
 	text-align: center;
+	font-family: Arial;
 }
 
-canvas {
+h1 {
+	color: red;
+	font-weight: bold;
+}
+
+#canvas {
 	background-color: black;
 	cursor: pointer;
-	border-radius: 16px;
-	-moz-border-radius: 16px;
-	-webkit-box-shadow: inset 0px 0px 20px white;
-	-moz-box-shadow: inset 0px 0px 20px white;
-	box-shadow: inset 0px 0px 20px white;
 }
 
 #controls {
@@ -30,22 +26,12 @@ canvas {
 }
 
 #game {
+
+	border: 2px solid white;
+
 	width: 640px;
 	margin: 0 auto;
 	height: 480px;
 	overflow: hidden;
 	position: relative;
 }
-
-/* iphone view */
-@media screen and (max-width: 320px) {
-	h1 {
-		display: none;
-	}
-	canvas {
-		border: none;
-		border-radius: none;
-		-webkit-box-shadow: none;
-	}
-}
-
