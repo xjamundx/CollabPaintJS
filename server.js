@@ -36,7 +36,13 @@ socket.on('connection', function(client) {
 
 		if (circle.clear) {
 			msg.clear = true;
+			msg.reset = true;
 			buffer = [];
+			delete msg.circle;
+		}
+
+		if (circle.reset) {
+			msg.reset = true;
 			delete msg.circle;
 		}
 

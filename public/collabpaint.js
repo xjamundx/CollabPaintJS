@@ -1,6 +1,6 @@
 (function() {
 
-	var ctx, touchdown, socket, i, last, color, size, width, height;
+	var ctx, touchdown, socket, i, last = [], color, size, width, height;
 
 	socket = new io.Socket()
 	socket.connect()
@@ -35,7 +35,7 @@
 	
 	$canvas.ontouchstart = function(e) {
 		touchdown = false
-		last = false
+		clearLast()
 	}
 
 	// iOS alternative to mouse move
@@ -61,14 +61,18 @@
 	$clear.addEventListener('click', function(e) {
 		clearScreen()
 		touchdown = false
-		last = false
-		socket.send({clear:true})
+		clearLast()
 	}, false)
 
 	window.onmouseup = function(e) {
-		touchdown = false;
-		last = false
+		touchdown = false
+		clearLast()
 	};
+
+	function clearLast() {
+		delete last["me"]
+		socket.send({reset:true});
+	}
 		
 	window.onmousedown = function(e) {
 		touchdown = true;
@@ -81,13 +85,17 @@
 				receive(message)
 			});
 		}
+		
+		if (msg.reset) {
+			delete last[msg.session_id]
+		}
 
 		if (msg.clear) {
 			clearScreen()
 		}
 		
 		if (msg.circle) {
-			drawCircle(msg.circle, true)
+			drawCircle(msg.circle, msg.session_id)
 		}		
 		
 		if (msg.count) {
@@ -127,27 +135,28 @@
 
 	};
 		
-	function drawCircle(circle, remote) {
+	function drawCircle(circle, session_id) {
+
+		session_id = session_id || "me"
 
 		ctx.strokeStyle = circle.color
 		ctx.fillStyle = circle.color;
 		ctx.lineWidth = circle.size;
-		ctx.beginPath()
+ 		ctx.lineCap = "round"
 
-		if (last) {
-	 		ctx.moveTo(last.x, last.y)
+		ctx.beginPath()
+		if (last[session_id]) {
+	 		ctx.moveTo(last[session_id].x, last[session_id].y)
 	 		ctx.lineTo(circle.x, circle.y)
 	 		ctx.stroke()
-			last = circle
 		} else {	
 			ctx.moveTo(circle.x, circle.y);
-			ctx.arc(circle.x, circle.y, circle.size, 0,  Math.PI*2, true);
+			ctx.arc(circle.x, circle.y, circle.size / 2, 0,  Math.PI*2, true);
 			ctx.fill();
 		}
-		
-		if (!remote) last = circle
-		
 		ctx.closePath()
+
+		last[session_id] = circle		
 
 	};
 			
