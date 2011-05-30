@@ -32,6 +32,11 @@
 	body.ontouchmove = function(e) {
 		e.preventDefault();
 	};
+	
+	$canvas.ontouchstart = function(e) {
+		touchdown = false
+		last = false
+	}
 
 	// iOS alternative to mouse move
 	$canvas.ontouchmove = function(e) {
