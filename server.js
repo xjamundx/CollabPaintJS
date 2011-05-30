@@ -1,29 +1,17 @@
-var http = require('http'),
-	url = require('url'),
-	fs = require('fs'),
-	io = require('socket.io'), 
-	sys = require('sys'),
-	server = http.createServer(function(req, res) {
-		
-		// force any unknown request to collabpaint.html
-		var path = url.parse(req.url).pathname;
-		if (path !== "/json.js" && path !== "/collabpaint.js" && path !== "/collabpaint.html") {
-			path = "/collabpaint.html";
-		}
+var express = require('express')
+    , app = express.createServer()
+	, io = require('socket.io')
+	, port = process.argv[2] || 80
+	, socket
 
-		fs.readFile(__dirname + path, function(err, data) {
-			res.writeHead(200, {'Content-Type': /\.js$/.test(path) ? 'text/javascript' : 'text/html'})
-			res.write(data, 'utf8');
-			res.end();
-		});
+app.use(express.static(__dirname + '/public'))
+app.listen(port)
 
-	});
-	
-server.listen(80);
+socket = io.listen(app)
 
-var io = io.listen(server);
-
-io.on('connection', function(client) {
+console.log(socket)
+socket.on('connection', function(client) {
+	console.log(client)
 	client.on('message', function(coords) {
 		client.broadcast({
 			coords: coords,

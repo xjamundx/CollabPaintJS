@@ -1,0 +1,13 @@
+{
+    "name": "CollabPaintJS",
+    "description": "Collaborative painting app with socket.io",
+    "version": "0.0.1",
+    "homepage": "http://xjamundx.no.de",
+    "engines": {
+        "node": "0.4.x" 
+    },
+    "dependencies": {
+		"socket.io": "0.6.x",
+		"express": "2.x.x"
+    }
+}
