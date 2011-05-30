@@ -1,6 +1,6 @@
 (function() {
 
-	var ctx, touchdown, drawCircle, socket, i, last, color, size, width, height;
+	var ctx, touchdown, socket, i, last, color, size, width, height;
 
 	socket = new io.Socket()
 	socket.connect()
@@ -56,11 +56,13 @@
 	$clear.addEventListener('click', function(e) {
 		clearScreen()
 		touchdown = false
+		last = false
 		socket.send({clear:true})
 	}, false)
 
 	window.onmouseup = function(e) {
 		touchdown = false;
+		last = false
 	};
 		
 	window.onmousedown = function(e) {
@@ -80,7 +82,7 @@
 		}
 		
 		if (msg.circle) {
-			drawCircle(msg.circle)
+			drawCircle(msg.circle, true)
 		}		
 		
 		if (msg.count) {
@@ -120,25 +122,28 @@
 
 	};
 		
-	function drawCircle(circle) {
+	function drawCircle(circle, remote) {
+
 		ctx.strokeStyle = circle.color
+		ctx.fillStyle = circle.color;
 		ctx.lineWidth = circle.size;
 		ctx.beginPath()
+
 		if (last) {
 	 		ctx.moveTo(last.x, last.y)
 	 		ctx.lineTo(circle.x, circle.y)
 	 		ctx.stroke()
-			ctx.closePath()
+			last = circle
 		} else {	
-			ctx.fillStyle = circle.color;
-			ctx.beginPath();
 			ctx.moveTo(circle.x, circle.y);
-			ctx.arc(circle.x, circle.y, size, 0,  Math.PI*2, true);
+			ctx.arc(circle.x, circle.y, circle.size, 0,  Math.PI*2, true);
 			ctx.fill();
-			ctx.closePath();	
 		}
+		
+		if (!remote) last = circle
+		
+		ctx.closePath()
 
-		last = circle
 	};
 			
 })();
