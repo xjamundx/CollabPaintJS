@@ -19,7 +19,7 @@ var http = require('http'),
 
 	});
 	
-server.listen(8080);
+server.listen(80);
 
 var io = io.listen(server);
 
