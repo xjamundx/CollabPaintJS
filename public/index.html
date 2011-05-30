@@ -8,7 +8,37 @@
   </head>
   <body>
     <h1>CollabPaintJS</h1>    
-	<canvas id="canvas" width="320" height="430"></canvas>
+    <div id="game">
+		<canvas id="canvas" width="640" height="480"></canvas>
+		<div id="controls">
+			<label for="color">Color:</label>
+			<select id="color">
+				<option>Blue</option>
+				<option>Red</option>
+				<option>Yellow</option>
+				<option>Cyan</option>
+				<option>Orange</option>
+				<option>White</option>
+			</select>
+			<label for="size">Size:</label>
+			<select id="size">
+				<option>1</option>
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+				<option>7</option>
+				<option>8</option>
+				<option>9</option>
+				<option>10</option>
+				<option>15</option>
+				<option>20</option>
+				<option>25</option>
+			</select>
+			<button id="clear">Clear All</button>
+		</div>
+	</div>
     <script src="/json.js"></script> <!-- for ie -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/collabpaint.js"></script>
