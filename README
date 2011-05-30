@@ -1,0 +1,23 @@
+Fancy Collaboritive Painting App Based on Node.js
+
+Free to use and distribute or hack or whatever.
+
+Requires:
+	Node.js
+	Socket.io-node
+
+Intructions:
+	I needed to move this into my socket.io directory to get it to work.
+	cd ~/dev/socket.io/CollabPaintJS
+	sudo node server.js
+
+Notes:
+	Using Node.js 2.4
+
+Credits:
+	This app was created fully by Jamund Ferguson
+	jamund@gmail.com
+	http://www.jamund.com/
+	http://www.twitter.com/xjamundx/
+
+
