@@ -25,24 +25,6 @@
 	size = $size.options[$size.selectedIndex].value
 	color = $color.options[$color.selectedIndex].value.toLowerCase()
 	
-	// hide the toolbar in iOS
-	setTimeout(function() { window.scrollTo(0, 1); }, 100);
-
-	// prevents dragging the page in iOS	
-	body.ontouchmove = function(e) {
-		e.preventDefault();
-	};
-	
-	$canvas.ontouchstart = function(e) {
-		touchdown = false
-		clearLast()
-	}
-
-	// iOS alternative to mouse move
-	$canvas.ontouchmove = function(e) {
-		move(e, true);
-	};
-	
 	// typical draw evemt for desktop 
 	$canvas.onmousemove = function(e) {
 		move(e);	
@@ -69,22 +51,35 @@
 		touchdown = false
 		clearLast()
 	};
-
-	function clearLast() {
-		delete last["me"]
-		socket.send({reset:true});
-	}
 		
 	window.onmousedown = function(e) {
 		touchdown = true;
 	};
 	
+	// iOS
+
+	// hide the toolbar in iOS
+	setTimeout(function() { window.scrollTo(0, 1); }, 100);
+
+	// prevents dragging the page in iOS	
+	body.ontouchmove = function(e) {
+		e.preventDefault();
+	};
+	
+	$canvas.ontouchstart = function(e) {
+		touchdown = false
+		clearLast()
+	}
+
+	// iOS alternative to mouse move
+	$canvas.ontouchmove = function(e) {
+		move(e);
+	};
+	
 	function receive(msg) {
 
 		if (msg.buffer) {
-			msg.buffer.forEach(function(message) {
-				receive(message)
-			});
+			msg.buffer.forEach(receive);
 		}
 		
 		if (msg.reset) {
@@ -108,21 +103,27 @@
 		ctx.clearRect(0,0,width,height)
 	}
 	
-	function move(e, iphone) {
+	function clearLast() {
+		delete last["me"]
+		socket.send({reset:true});
+	}
 
-		var cx, circle, x, y, i, iphone = iphone || false;
+	function move(e) {
 
-		if (!touchdown && !iphone) return
+		var x, y
+
+		if (!touchdown && !e.targetTouches) return
 
 		if (touchdown) {
-			x = e.clientX - $game.offsetLeft + window.scrollX
-			y = e.clientY - $game.offsetTop + window.scrollY
-		} else if (iphone) {
-			for (i = 0; i < e.targetTouches.length; i++) {
-				x = e.targetTouches[i].clientX
-				y = e.targetTouches[i].clientY
-			}
+			x = e.clientX + window.scrollX
+			y = e.clientY + window.scrollY
+		} else {
+			x = e.targetTouches[0].clientX
+			y = e.targetTouches[0].clientY
 		}
+
+		x -= $game.offsetLeft
+		y -= $game.offsetTop
 
 		circle = {
 			x: x,
