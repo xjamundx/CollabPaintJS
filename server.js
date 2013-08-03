@@ -1,58 +1,63 @@
-var express = require('express')
-    , app = express.createServer()
-	, io = require('socket.io')
-	, port = process.argv[2] || 80
-	, buffer = []
-	, count = 0
-	, socket
+// requires
+var express = require('express');
+var app = express();
+var io = require('socket.io');
+var port = process.argv[2] || 8888;
+var server = require('http').createServer(app);
+var socket = io.listen(server);
 
-app.use(express.static(__dirname + '/public'))
-app.listen(port)
+// setup static files directory
+app.use(express.static(__dirname + '/public'));
 
-socket = io.listen(app)
+// start server listening
+server.listen(port);
+
+// state
+var buffer = [];
+var count = 0;
+
 
 socket.on('connection', function(client) {
 	
 	count++;
-	
-	client.send({
+
+    // each time a new person connects, send them the old stuff
+	client.emit('message', {
 		buffer: buffer,
 		count: count
 	});
 
-	client.broadcast({count:count, session_id: client.sessionId})
+    // send a welcome
+	client.broadcast.emit('message', {count: count, sessionId: client.sessionId})
 			
 	// message
-	client.on('message', function(circle) {
+	client.on('paint', function(data) {
 		
 		var msg = {
-			circle: circle,
-			session_id: client.sessionId
+			circle: data,
+			session_id: data.sessionId
 		}
 
 		buffer.push(msg)
 
 		if (buffer.length > 1024) buffer.shift();
 
-		if (circle.clear) {
-			msg.clear = true;
-			msg.reset = true;
-			buffer = [];
-			delete msg.circle;
-		}
-
-		if (circle.reset) {
-			msg.reset = true;
-			delete msg.circle;
-		}
-
-		client.broadcast(msg);
+		client.broadcast.emit('paint', msg);
 
 	});
+
+    client.on('reset', function() {
+        client.broadcast.emit('reset');
+    });
+
+    client.on('clear', function() {
+        buffer = [];
+        client.broadcast.emit('clear');
+    });
 	
 	client.on('disconnect', function(){
 		count--;
-        client.broadcast({count: count, session_id: client.sessionId});
+        client.broadcast.emit('message', {count: count, sessionId: client.sessionId});
     });
     
 });
